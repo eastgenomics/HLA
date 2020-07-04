@@ -1,0 +1,11 @@
+{% extends "hla/layout.html" %}
+{% block title %}
+    Import new data into the database.
+{% endblock %}
+{% block content %}
+    <form method="POST" class="log-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Import</button>
+    </form>
+{% endblock %}
