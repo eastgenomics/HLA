@@ -29,4 +29,21 @@
     {% else %}
         <p>No messages have been logged. Use the <a href="{% url 'import' %}">Log Message form</a>.</p>
     {% endif %}
+    
+    <h2>Results</h2>
+
+    <table>
+        <tr>
+            <th>Test</th>
+            <th>Allele</th>
+            <th>Result</th>
+        </tr>
+        {% for item in query_results %}
+        <tr> 
+            <td>{{ item.testID }}</td>
+            <td>{{ item.alleleID }}</td>>
+            <td>{{ item.result }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
