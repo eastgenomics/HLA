@@ -3,6 +3,9 @@
     Import new data into the database.
 {% endblock %}
 {% block content %}
+    
+
+
     <form method="POST" class="log-form">
         {% csrf_token %}
         {{ form.as_p }}

@@ -1,6 +1,7 @@
 from django import forms
 from hla.models import ImportData, Results, Tests
 
+
 class LogMessageForm(forms.ModelForm):
     class Meta:
         model = ImportData

@@ -1,0 +1,17 @@
+{% extends "hla/layout.html" %}
+{% block title %}
+    Search results.
+{% endblock %}
+{% block content %}
+    
+    <h1>Search Results</h1>
+
+    <ul>
+        {% for result in object_list %}
+        <li>
+            {{ result.patientID }}, {{ result.testID }}, {{ result.locusID }}, {{ result.result }}
+        </li>
+        {% endfor %}
+    </ul>
+    
+{% endblock %}

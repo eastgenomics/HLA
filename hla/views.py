@@ -5,15 +5,26 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from hla.forms import LogMessageForm, AddResult, AddTest
 from hla.models import ImportData, Results, Tests
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 
-class HomeListView(ListView):
-    """Renders the home page, with a list of all messages."""
+class HomePageView(TemplateView):
+    '''Renders home page.'''
+    template_name = 'home.html'
+
+
+class SearchResultsView(ListView):
+    """Renders list of search results."""
     model = Results
+    template_name = 'search_results.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeListView, self).get_context_data(**kwargs)
-        return context
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        object_list = Results.objects.filter(patientID=query)
+        return object_list
+
+
+def search_results(request):
+    return render(request, "hla/search_results.html")
 
 def about(request):
     return render(request, "hla/about.html")

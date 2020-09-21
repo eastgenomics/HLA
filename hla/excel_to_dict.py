@@ -18,6 +18,7 @@ previousAllele = ""
 for row in df.itertuples():
     # create patient instance in Patients table (what happens if already there though??)
     patient = row.Name
+    print(patient)
     Patients.objects.create(patientNumber=patient)
 
     # create locus instance in Locus table (what happens if already there though??)
@@ -45,11 +46,12 @@ for row in df.itertuples():
     locus_id = Locus.objects.get(locusName=locus)
     patient_id = Patients.objects.get(patientNumber=patient)
     test_id = Tests.objects.get(testDate=date_of_test)
-    Results.objects.create(result=result, patientID=patient_id, testID=test_id, locusID=locus_id)
+    Results.objects.create(result=result,
+                            patientID=patient_id,
+                            testID=test_id,
+                            locusID=locus_id)
     #resultsTable = Results(My_code='some code', Location='India', status_ID=status)
     #resultsTable.save()
     
 
 # Step 4: Profit??
-print(df.head())
-print(dateOfTest)
