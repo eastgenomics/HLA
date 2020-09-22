@@ -21,13 +21,6 @@ class SearchResultsView(ListView):
         query = self.request.GET.get('q')
         query_as_id = Patients.objects.get(patientNumber=query).patientID
         object_list = Results.objects.filter(patientID=query_as_id)
-        values_list = []
-        for obj in object_list:
-            patient_value = obj.patientID.patientNumber
-            test_value = str(obj.testID.testDate)
-            locus_value = obj.locusID.locusName
-            result_value = obj.result
-            print(patient_value + ", " + test_value + ", " + locus_value + ", " + result_value)
         return object_list
 
 
