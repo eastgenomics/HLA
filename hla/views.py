@@ -7,9 +7,16 @@ from hla.forms import LogMessageForm, AddResult, AddTest
 from hla.models import ImportData, Results, Tests, Locus, Patients
 from django.views.generic import ListView, TemplateView
 
-class HomePageView(TemplateView):
+class HomePageView(ListView):
     '''Renders home page.'''
+    model = Results
     template_name = 'hla/home.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        query_as_id = Patients.objects.get(patientNumber=query).patientID
+        object_list = Results.objects.filter(patientID=query_as_id)
+        return object_list
 
 
 class SearchResultsView(ListView):

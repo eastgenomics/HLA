@@ -5,12 +5,20 @@
 {% block content %}
     <h1>Search</h1>
 
-    <form action="{% url 'search_results' %}" method="get">
+    <form action="{% url 'home' %}" method="get">
         <input name="q" type="text" placeholder="Search...">
 
     </form>>
 
+    <h1>Search Results</h1>
 
+    <ul>
+        {% for result in object_list %}
+        <li>
+            {{ result.patientID.patientNumber }}, {{ result.testID.testDate }}, {{ result.locusID.locusName }}, {{ result.result }}
+        </li>
+        {% endfor %}
+    </ul>
 
 
 {% endblock %}
