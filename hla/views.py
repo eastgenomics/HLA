@@ -4,22 +4,30 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from hla.forms import LogMessageForm, AddResult, AddTest
-from hla.models import ImportData, Results, Tests
+from hla.models import ImportData, Results, Tests, Locus, Patients
 from django.views.generic import ListView, TemplateView
 
 class HomePageView(TemplateView):
     '''Renders home page.'''
-    template_name = 'home.html'
+    template_name = 'hla/home.html'
 
 
 class SearchResultsView(ListView):
     """Renders list of search results."""
     model = Results
-    template_name = 'search_results.html'
+    template_name = 'hla/search_results.html'
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        object_list = Results.objects.filter(patientID=query)
+        query_as_id = Patients.objects.get(patientNumber=query).patientID
+        object_list = Results.objects.filter(patientID=query_as_id)
+        values_list = []
+        for obj in object_list:
+            patient_value = obj.patientID.patientNumber
+            test_value = str(obj.testID.testDate)
+            locus_value = obj.locusID.locusName
+            result_value = obj.result
+            print(patient_value + ", " + test_value + ", " + locus_value + ", " + result_value)
         return object_list
 
 

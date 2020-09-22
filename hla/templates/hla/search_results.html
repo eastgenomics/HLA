@@ -9,9 +9,9 @@
     <ul>
         {% for result in object_list %}
         <li>
-            {{ result.patientID }}, {{ result.testID }}, {{ result.locusID }}, {{ result.result }}
+            {{ result.patientID.patientNumber }}, {{ result.testID.testDate }}, {{ result.locusID.locusName }}, {{ result.result }}
         </li>
         {% endfor %}
     </ul>
-    
+
 {% endblock %}
