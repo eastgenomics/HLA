@@ -20,15 +20,16 @@ class HomePageView(ListView):
                 query_as_id = Patients.objects.get(patientNumber=query).patientID
                 object_list = Results.objects.filter(patientID=query_as_id)
             except ObjectDoesNotExist:
-                return
+                object_list = Results.objects.none()
         elif self.request.GET.get('r'):
             try:
                 query = self.request.GET.get('r')
                 object_list = Results.objects.filter(result=query)
             except ObjectDoesNotExist:
-                return
+                object_list = Results.objects.none()
         else:
-            return
+            object_list = Results.objects.none()
+        print(object_list)
         return object_list
 
 

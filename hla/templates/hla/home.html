@@ -11,23 +11,22 @@
 
     <form action="{% url 'home' %}" method="get">
         <input name="q" type="text" placeholder="Search by patient...">
+        <button type="submit" class="save btn btn-default">Search</button>
     </form>>
 
     <form action="{% url 'home' %}" method="get">
         <input name="r" type="text" placeholder="Search by result...">
+        <button type="submit" class="save btn btn-default">Search</button>
     </form>>
 
-    {% if object_list %}    
     <ul>
         {% for result in object_list %}
         <li>
             {{ result.patientID.patientNumber }}, {{ result.testID.testDate }}, {{ result.locusID.locusName }}, {{ result.result }}
         </li>
+        {% empty %}
+        No results to show.
         {% endfor %}
     </ul>
-    {% else %}
-    <br>No results found.
-    {% endif %}
-
 
 {% endblock %}
