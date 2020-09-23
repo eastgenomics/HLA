@@ -4,8 +4,11 @@
 {% endblock %}
 {% block content %}
     <h1>HLA Database</h1>
-    Print this thing
-
+    Welcome to the CUH Tissue Typing HLA Database.
+    <br>
+    Use the boxes below to search by patient number (column 'name' in the old spreadsheets) or by allele (column 'result' in the old spreadsheets).
+    <br>
+    If you need to add the results of a sequencing run, click 'Import Data' at the top of the page.
 
     <h2>Search</h2>
 
@@ -15,7 +18,7 @@
     </form>>
 
     <form action="{% url 'home' %}" method="get">
-        <input name="r" type="text" placeholder="Search by result...">
+        <input name="r" type="text" placeholder="Search by allele...">
         <button type="submit" class="save btn btn-default">Search</button>
     </form>>
 
