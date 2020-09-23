@@ -7,22 +7,14 @@
     Print this thing
 
 
-    <h1>Search</h1>
+    <h2>Search</h2>
 
     <form action="{% url 'home' %}" method="get">
         <input name="q" type="text" placeholder="Search by patient...">
     </form>>
 
     <form action="{% url 'home' %}" method="get">
-        <input name="r" type="text" placeholder="Search by locus...">
-    </form>>
-
-    <form action="{% url 'home' %}" method="get">
-        <input name="s" type="text" placeholder="Search by test...">
-    </form>>
-
-    <form action="{% url 'home' %}" method="get">
-        <input name="t" type="text" placeholder="Search by result...">
+        <input name="r" type="text" placeholder="Search by result...">
     </form>>
 
     {% if object_list %}    

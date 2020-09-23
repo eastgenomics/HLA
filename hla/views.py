@@ -14,10 +14,6 @@ class HomePageView(ListView):
     template_name = 'hla/home.html'
 
     def get_queryset(self):
-        #query = self.request.GET['q']
-        #ruery = self.request.GET['r']
-        #suery = self.request.GET['s']
-        #tuery = self.request.GET['t']
         if self.request.GET.get('q'):
             try:
                 query = self.request.GET.get('q')
@@ -28,20 +24,6 @@ class HomePageView(ListView):
         elif self.request.GET.get('r'):
             try:
                 query = self.request.GET.get('r')
-                query_as_id = Locus.objects.get(locusName=query).locusID
-                object_list = Results.objects.filter(locusID=query_as_id)
-            except ObjectDoesNotExist:
-                return
-        elif self.request.GET.get('s'):
-            try:
-                query = self.request.GET.get('s')
-                query_as_id = Tests.objects.get(testDate=query).testID
-                object_list = Results.objects.filter(patientID=query_as_id)
-            except ObjectDoesNotExist:
-                return
-        elif self.request.GET.get('t'):
-            try:
-                query = self.request.GET.get('t')
                 object_list = Results.objects.filter(result=query)
             except ObjectDoesNotExist:
                 return
