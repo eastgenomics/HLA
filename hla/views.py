@@ -1,12 +1,11 @@
-import re
-from datetime import datetime
-from django.http import HttpResponse
 from django.db.models.base import ObjectDoesNotExist
 from django.shortcuts import render
-from django.shortcuts import redirect
-from hla.forms import LogMessageForm, AddResult, AddTest
-from hla.models import ImportData, Results, Tests, Locus, Patients
-from django.views.generic import ListView, TemplateView
+from django.http import HttpResponseRedirect
+from hla.forms import UploadDataForm
+from hla.models import Results, Patients
+from django.views.generic import ListView
+from hla.management.commands.seedFromExcel import importData
+
 
 class HomePageView(ListView):
     '''Renders home page.'''
@@ -29,19 +28,16 @@ class HomePageView(ListView):
                 object_list = Results.objects.none()
         else:
             object_list = Results.objects.none()
-        print(object_list)
         return object_list
 
 
 def import_data(request):
-    form = LogMessageForm(request.POST or None)
-
     if request.method == "POST":
+        form = UploadDataForm(request.POST, request.FILES)
         if form.is_valid():
-            message = form.save(commit=False)
-            message.log_date = datetime.now()
-            message.save()
-            return redirect("home")
+            importData(request.FILES['file'])
+            return HttpResponseRedirect('/home/')
     else:
-        return render(request, "hla/import_data.html", {"form": form})
+        form = UploadDataForm()
+    return render(request, "hla/import_data.html", {"form": form})
 
