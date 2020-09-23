@@ -3,15 +3,29 @@
     Home
 {% endblock %}
 {% block content %}
+    <h1>HLA Database</h1>
+    Print this thing
+
+
     <h1>Search</h1>
 
     <form action="{% url 'home' %}" method="get">
-        <input name="q" type="text" placeholder="Search...">
-
+        <input name="q" type="text" placeholder="Search by patient...">
     </form>>
 
-    <h1>Search Results</h1>
+    <form action="{% url 'home' %}" method="get">
+        <input name="r" type="text" placeholder="Search by locus...">
+    </form>>
 
+    <form action="{% url 'home' %}" method="get">
+        <input name="s" type="text" placeholder="Search by test...">
+    </form>>
+
+    <form action="{% url 'home' %}" method="get">
+        <input name="t" type="text" placeholder="Search by result...">
+    </form>>
+
+    {% if object_list %}    
     <ul>
         {% for result in object_list %}
         <li>
@@ -19,6 +33,9 @@
         </li>
         {% endfor %}
     </ul>
+    {% else %}
+    <br>No results found.
+    {% endif %}
 
 
 {% endblock %}
