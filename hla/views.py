@@ -16,8 +16,8 @@ class HomePageView(ListView):
         if self.request.GET.get('q'):
             try:
                 query = self.request.GET.get('q')
-                query_as_id = Patients.objects.get(patientNumber=query).patientID
-                object_list = Results.objects.filter(patientID=query_as_id)
+                queryAsId = Patients.objects.get(patientNumber=query).patientID
+                object_list = Results.objects.filter(patientID=queryAsId)
             except ObjectDoesNotExist:
                 object_list = Results.objects.none()
         elif self.request.GET.get('r'):
@@ -35,9 +35,18 @@ def import_data(request):
     if request.method == "POST":
         form = UploadDataForm(request.POST, request.FILES)
         if form.is_valid():
-            importData(request.FILES['file'])
-            return HttpResponseRedirect('/home/')
+            if importData(request.FILES['file']) > 0:
+                return HttpResponseRedirect('/failure/')
+            else:
+                return HttpResponseRedirect('/success/')
     else:
         form = UploadDataForm()
     return render(request, "hla/import_data.html", {"form": form})
 
+
+def success(request):
+    return render(request, "hla/success.html")
+
+
+def failure(request):
+    return render(request, "hla/failure.html")

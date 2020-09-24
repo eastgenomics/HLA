@@ -9,7 +9,8 @@ CONFIRMED_CHOICES = [
 
 
 class Patients(models.Model):
-    patientNumber = models.CharField(max_length=15, unique=True, default='unknown')
+    patientNumber = models.CharField(max_length=15, unique=True,
+                                     default='unknown')
     patientID = models.AutoField(primary_key=True)
 
 
@@ -20,7 +21,8 @@ class Locus(models.Model):
 
 class Tests(models.Model):
     testID = models.AutoField(primary_key=True)
-    testDate = models.DateTimeField(auto_now=False, default=datetime.now, unique=True)
+    testDate = models.DateTimeField(auto_now=False, default=datetime.now,
+                                    unique=True)
     confirmed = models.CharField(max_length=1, choices=CONFIRMED_CHOICES)
 
 

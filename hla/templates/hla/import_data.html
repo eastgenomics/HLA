@@ -8,7 +8,7 @@
 
     Choose the excel file you want to add to the database, then click Import.
 
-    <form method="POST" class="log-form">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-default">Import</button>

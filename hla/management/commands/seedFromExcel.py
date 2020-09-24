@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from pandas import read_excel
 from datetime import datetime
 from hla.models import Results, Patients, Tests, Locus
+from django.db import IntegrityError
 
 
 class Command(BaseCommand):
@@ -39,8 +40,12 @@ def importData(excel_file):
     date_raw = date_df.loc[1, 1]
     dateOfTest = datetime.strptime(date_raw, '%b %d %Y %H:%M:%S')
 
-    # create test instance in Tests table
-    Tests.objects.create(testDate=dateOfTest)
+    # create test instance in Tests table (& catch duplicates)
+    try:
+        Tests.objects.create(testDate=dateOfTest)
+    except IntegrityError:
+        print("There is already a test with this datetime in the DB.")
+        return 1
 
     # initialise variables for remembering previous alleles (handles X)
     previousLocus = ""
@@ -83,6 +88,7 @@ def importData(excel_file):
         Results.objects.create(result=result, patientID=patient_id,
                                testID=test_id, locusID=locus_id)
     return 0
+
 
 def run_seed(inp):
     # Delete whatever crap is already there
