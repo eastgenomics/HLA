@@ -1,6 +1,5 @@
 from django.urls import path
 from hla import views
-from hla.models import ImportData
 from .views import HomePageView
 
 

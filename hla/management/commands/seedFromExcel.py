@@ -12,8 +12,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write('seeding data...')
-        run_seed(options['input'])
-        self.stdout.write('done.')
+        if run_seed(options['input']) > 0:
+            self.stdout.write('seeding failed.')
+        else:
+            self.stdout.write('done.')
 
 
 def clear_data():
@@ -25,8 +27,12 @@ def clear_data():
 
 def importData(excel_file):
     print("Importing data into database")
-    # Get test results into dataframe
-    df = read_excel(excel_file, sheet_name="Transfer set A & B")
+    # Get test results into dataframe (& check if valid)
+    try:
+        df = read_excel(excel_file, sheet_name="Transfer set A & B")
+    except Exception:
+        print("Input file not recognised. Is it the NGS excel export?")
+        return 1
 
     # Get datetime of test (test identifier)
     date_df = read_excel(excel_file, sheet_name='Summary', header=None)
@@ -76,11 +82,14 @@ def importData(excel_file):
         test_id = Tests.objects.get(testDate=dateOfTest)
         Results.objects.create(result=result, patientID=patient_id,
                                testID=test_id, locusID=locus_id)
-
+    return 0
 
 def run_seed(inp):
     # Delete whatever crap is already there
     clear_data()
 
     # Import new data from excel
-    importData(inp)
+    if importData(inp) > 0:
+        return 1
+    else:
+        return 0
