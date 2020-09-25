@@ -2,12 +2,6 @@ from django.db import models
 from datetime import datetime
 
 
-CONFIRMED_CHOICES = [
-    ('y', 'Yes'),
-    ('n', 'No'),
-]
-
-
 class Patients(models.Model):
     patientNumber = models.CharField(max_length=15, unique=True,
                                      default='unknown')
@@ -23,7 +17,6 @@ class Tests(models.Model):
     testID = models.AutoField(primary_key=True)
     testDate = models.DateTimeField(auto_now=False, default=datetime.now,
                                     unique=True)
-    confirmed = models.CharField(max_length=1, choices=CONFIRMED_CHOICES)
 
 
 class Results(models.Model):
@@ -32,3 +25,4 @@ class Results(models.Model):
     testID = models.ForeignKey(Tests, on_delete=models.CASCADE)
     locusID = models.ForeignKey(Locus, on_delete=models.CASCADE)
     result = models.CharField(max_length=20)
+    confirmed = models.BooleanField(default=False)

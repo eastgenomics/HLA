@@ -10,4 +10,3 @@ urlpatterns = [
     path("failure/", views.failure, name="failure"),
 
 ]
-

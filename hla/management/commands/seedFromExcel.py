@@ -3,6 +3,7 @@ from pandas import read_excel
 from datetime import datetime
 from hla.models import Results, Patients, Tests, Locus
 from django.db import IntegrityError
+import collections
 
 
 class Command(BaseCommand):
@@ -24,6 +25,21 @@ def clear_data():
     print("Deleting Result & Test instances")
     Results.objects.all().delete()
     Tests.objects.all().delete()
+
+
+def checkConfirmed(result_object):
+    # filter results table by patientID and locusID
+    results_list = Results.objects.filter(patientID=result_object.patientID,
+                                          locusID=result_object.locusID)
+    # get results as dict (testDate as key)
+    test_dict = collections.defaultdict(list)
+    for res in results_list:
+        test_dict[res.testID].append(res.result)
+    # if this gives more than 1 entry (i.e. not just itself) confirmed = true
+    if len(results_list) > 1:
+        return (True, results_list)
+    else:
+        return (False, results_list)
 
 
 def importData(excel_file):
@@ -85,8 +101,20 @@ def importData(excel_file):
         locus_id = Locus.objects.get(locusName=locus)
         patient_id = Patients.objects.get(patientNumber=patient)
         test_id = Tests.objects.get(testDate=dateOfTest)
-        Results.objects.create(result=result, patientID=patient_id,
-                               testID=test_id, locusID=locus_id)
+        new_obj = Results.objects.create(result=result, patientID=patient_id,
+                                         testID=test_id, locusID=locus_id)
+        
+        # check whether this confirms previous results & update previous
+        # entries to confirmed if neccessary
+        conf = checkConfirmed(new_obj)
+        if conf[0]:
+            new_obj.confirmed = True
+            for prev_res in conf[1]:
+                prev_res.confirmed = True
+                prev_res.save()
+        else:
+            new_obj.confirmed = False
+        new_obj.save()
     return 0
 
 
