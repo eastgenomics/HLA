@@ -28,18 +28,38 @@ def clear_data():
 
 
 def checkConfirmed(result_object):
+    """
+    Checks whether a result confirms any previous result already in the DB.
+    Returns True or False, plus any confirmed previous results.
+    """
     # filter results table by patientID and locusID
     results_list = Results.objects.filter(patientID=result_object.patientID,
                                           locusID=result_object.locusID)
-    # get results as dict (testDate as key)
+    # get results & indices as dict (grouping by testDate as key)
     test_dict = collections.defaultdict(list)
     for res in results_list:
-        test_dict[res.testID].append(res.result)
-    # if this gives more than 1 entry (i.e. not just itself) confirmed = true
-    if len(results_list) > 1:
-        return (True, results_list)
-    else:
-        return (False, results_list)
+        test_dict[res.testID].append((res.result,res.resultID))
+    # convert to list of results grouped by test (sort to aid comparison later)
+    sorted_vals = []
+    for v in test_dict.values():
+        sorted_vals.append(sorted(v))
+    # swap values around (as we only want to compare the results, not indices)
+    swaplist = []
+    for val in sorted_vals:
+        k = (i[0][0],i[1][0])
+        l = (i[0][1],i[1][1])
+        swaplist.append((k,l))
+    # do pairwise comparison of results (avoiding self-comparisons)
+    comp = [(x[0] == y[0],x[1],y[1]) for i, x in enumerate(swaplist)
+            for j, y in enumerate(swaplist) if i != j]
+    # get list of previous results that are confirmed by result_object
+    change_ids = []
+    for i in comp:
+        if i[0]:
+            change_ids.append(i[1])
+            change_ids.append(i[2])
+    # return True if any pairwise comparison was True, and the unique set of confirmed result IDs
+    return (any(comp), set(change_ids))
 
 
 def importData(excel_file):
