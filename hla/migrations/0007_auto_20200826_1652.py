@@ -11,9 +11,7 @@ HLA_LOCI = (
     'HLA-DQA1',
     'HLA-DQB1',
     'HLA-DRB1',
-    'HLA-DRB3',
-    'HLA-DRB4',
-    'HLA-DRB5',
+    'HLA-DRB3/4/5',
 )
 
 
