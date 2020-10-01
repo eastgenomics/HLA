@@ -71,14 +71,20 @@ def checkConfirmed(result_object):
 def calculateAlleleFrequency(result_object):
     """
     Takes an object from the Results table & calculates how often that allele
-    appears in the DB. WARNING - does not take into account the fact that
-    confirmed results are duplicates! Also does not account for DRB3/4/5!
+    appears in the DB. WARNING - does not account for DRB3/4/5!
     """
-    geneNumber = len(Results.objects.filter(locusID=result_object.locusID))
-    alleleNumber = len(Results.objects.filter(locusID=result_object.locusID,
-                                              result=result_object.result))
-    alleleFreq = alleleNumber / geneNumber
-    return round(alleleFreq, 7)
+    geneNumUnconf = len(Results.objects.filter(locusID=result_object.locusID,
+                                               confirmed=False))
+    geneNumConf = len(Results.objects.filter(locusID=result_object.locusID,
+                                             confirmed=True))/2
+    alleleNumUnconf = len(Results.objects.filter(locusID=result_object.locusID,
+                                                 result=result_object.result,
+                                                 confirmed=False))
+    alleleNumConf = len(Results.objects.filter(locusID=result_object.locusID,
+                                               result=result_object.result,
+                                               confirmed=True))/2
+    AF = (alleleNumConf + alleleNumUnconf) / (geneNumConf + geneNumUnconf)
+    return round(AF, 7)
 
 
 def constructURL(result_object):
