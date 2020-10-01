@@ -26,3 +26,5 @@ class Results(models.Model):
     locusID = models.ForeignKey(Locus, on_delete=models.CASCADE)
     result = models.CharField(max_length=20)
     confirmed = models.BooleanField(default=False)
+    alleleFreq = models.CharField(max_length=20, default='NA')
+    externalInfo = models.URLField(max_length=100, null=True)

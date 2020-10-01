@@ -68,8 +68,46 @@ def checkConfirmed(result_object):
     return (any(comp), set(itertools.chain.from_iterable(change_ids)))
 
 
+def calculateAlleleFrequency(result_object):
+    """
+    Takes an object from the Results table & calculates how often that allele
+    appears in the DB. WARNING - does not take into account the fact that
+    confirmed results are duplicates! Also does not account for DRB3/4/5!
+    """
+    geneNumber = len(Results.objects.filter(locusID=result_object.locusID))
+    alleleNumber = len(Results.objects.filter(locusID=result_object.locusID,
+                                              result=result_object.result))
+    alleleFreq = alleleNumber / geneNumber
+    return round(alleleFreq, 7)
+
+
+def constructURL(result_object):
+    """
+    Takes a result object (from results table) & constructs a URL that should
+    link to the EBI HLA DB entry for the relevant allele. If there are multiple
+    results (ambiguous call) then multiple URLs are returned.
+    """
+    allele_list = []
+    if result_object.locusID.locusName == "HLA-DRB3/4/5":
+        locus = result_object.result.split("*")[0]
+        for res in result_object.result.split("*")[1].split("/"):
+            allele_string = "DRB" + locus + "*" + res
+            allele_list.append(allele_string)
+    else:
+        for res in result_object.result.split("/"):
+            allele_string = (result_object.locusID.locusName.split("-")[1]
+                             + "*" + res)
+            allele_list.append(allele_string)
+    urls_list = ""
+    for a_str in allele_list:
+        ebi_url = ("https://www.ebi.ac.uk/cgi-bin/ipd/imgt/hla/get_allele.cgi?"
+                   + a_str)
+        urls_list = urls_list + " " + ebi_url
+    return urls_list
+
+
 def importData(excel_file):
-    print("Importing data into database")
+    print("Importing data into database...")
     # Get test results into dataframe (& check if valid)
     try:
         df = read_excel(excel_file, sheet_name="Transfer set A & B")
@@ -124,7 +162,11 @@ def importData(excel_file):
         copy = row.Component.split("*")[1]
         if copy == "1":
             previousResult = result
+            if result == "X":
+                continue
         if copy == "2" and row.Result == "X":
+            if previousResult == "X":
+                continue
             result = previousResult
 
         # save result in Results table (& link to other tables)
@@ -145,6 +187,19 @@ def importData(excel_file):
                 prev_res.save()
         else:
             new_obj.confirmed = False
+        new_obj.save()
+
+        # calculate allele frequency & update previous entries
+        AF = str(calculateAlleleFrequency(new_obj))
+        obj_list = Results.objects.filter(result=new_obj.result,
+                                          locusID=new_obj.locusID)
+        for obj in obj_list:
+            obj.alleleFreq = AF
+            obj.save()
+
+        # get URLs for EBI DB entries to link to
+        urls = constructURL(new_obj)
+        new_obj.externalInfo = urls
         new_obj.save()
     return 0
 
