@@ -18,6 +18,7 @@ class Tests(models.Model):
     testRunID = models.CharField(max_length=30, default='unknown', unique=True)
     testDate = models.DateTimeField(auto_now=False, default=datetime.now,
                                     unique=True)
+    uploader = models.CharField(max_length=30, default='unknown')
 
 
 class Results(models.Model):

@@ -64,7 +64,7 @@ def constructURL(result_object):
     return urls_list
 
 
-def importData(excel_file):
+def importData(excel_file, uploader):
     print("Importing data into database...")
     # Get test results into dataframe (& check if valid)
     try:
@@ -83,7 +83,7 @@ def importData(excel_file):
 
     # create test instance in Tests table (& catch duplicates)
     try:
-        Tests.objects.create(testDate=dateOfTest, testRunID=run_id)
+        Tests.objects.create(testDate=dateOfTest, testRunID=run_id, uploader=uploader)
     except IntegrityError:
         print("There is already a test with this datetime or RunID in the DB.")
         return 1

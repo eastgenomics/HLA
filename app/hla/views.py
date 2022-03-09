@@ -41,8 +41,9 @@ def dashboard(request):
 def import_data(request):
     if request.method == "POST":
         form = UploadDataForm(request.POST, request.FILES)
+        uploader = request.user.username
         if form.is_valid():
-            if importData(request.FILES['file']) > 0:
+            if importData(request.FILES['file'], uploader) > 0:
                 return HttpResponseRedirect('/failure/')
             else:
                 return HttpResponseRedirect('/success/')
