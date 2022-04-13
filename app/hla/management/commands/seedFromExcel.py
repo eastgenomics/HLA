@@ -68,8 +68,8 @@ def importData(excel_file, uploader):
     print("Importing data into database...")
     # Get test results into dataframe (& check if valid)
     try:
-        inp = ExcelFile(excel_file)
-        sheets = inp.sheet_names
+        #inp = ExcelFile(excel_file)
+        #sheets = inp.sheet_names
         df = read_excel(excel_file, sheet_name=-1)
     except Exception:
         print("Input file not recognised. Is it the NGS excel export?")
