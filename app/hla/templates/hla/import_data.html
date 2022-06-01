@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}
+    Import new data into the database.
+{% endblock %}
+{% block content %}
+    
+    <h1>Import Data</h1>
+
+    Choose the excel file you want to add to the database, then click Import.
+    This may take a minute or two so please be patient and don't be tempted to hit refresh! (I need to add a progress indicator).
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Import</button>
+    </form>
+
+{% endblock %}
